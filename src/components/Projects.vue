@@ -2,8 +2,8 @@
 import ClassicWindow from './ClassicWindow.vue'
 import ProjectCard from './ProjectCard.vue'
 
-defineProps(['initialX', 'initialY', 'zIndex'])
-defineEmits(['focus'])
+defineProps(['isMinimized', 'initialX', 'initialY', 'zIndex'])
+defineEmits(['focus', 'close', 'minimize'])
 
 const projects = [
   {
@@ -25,10 +25,13 @@ const projects = [
   <ClassicWindow 
     title="C:\Projects" 
     id="projects"
+    :isMinimized="isMinimized"
     :initialX="initialX"
     :initialY="initialY"
     :zIndex="zIndex"
     @focus="$emit('focus')"
+    @close="$emit('close')"
+    @minimize="$emit('minimize')"
   >
     <div class="classic-explorer">
       <div class="explorer-toolbar classic-outset">

@@ -1,20 +1,23 @@
 <script setup>
 import ClassicWindow from './ClassicWindow.vue'
 
-defineProps(['initialX', 'initialY', 'initialWidth', 'initialHeight', 'zIndex'])
-defineEmits(['focus'])
+defineProps(['isMinimized', 'initialX', 'initialY', 'initialWidth', 'initialHeight', 'zIndex'])
+defineEmits(['focus', 'close', 'minimize'])
 </script>
 
 <template>
   <ClassicWindow 
     title="Welcome.exe" 
     id="hero"
+    :isMinimized="isMinimized"
     :initialX="initialX"
     :initialY="initialY"
     :initialWidth="initialWidth"
     :initialHeight="initialHeight"
     :zIndex="zIndex"
     @focus="$emit('focus')"
+    @close="$emit('close')"
+    @minimize="$emit('minimize')"
   >
     <div class="classic-hero-content">
       <h1 class="classic-welcome-title">Welcome to my Portfolio</h1>

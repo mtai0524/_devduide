@@ -13,10 +13,11 @@ const props = defineProps({
   initialY: { type: Number, default: 0 },
   initialWidth: { type: Number, default: 300 },
   initialHeight: { type: Number, default: 200 },
-  zIndex: { type: Number, default: 100 }
+  zIndex: { type: Number, default: 100 },
+  isMinimized: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['focus'])
+const emit = defineEmits(['focus', 'close', 'minimize'])
 
 const windowRef = ref(null)
 const handleRef = ref(null)
@@ -52,16 +53,17 @@ const onWindowClick = () => {
       zIndex: zIndex,
       position: 'absolute',
       left: 0,
-      top: 0
+      top: 0,
+      display: isMinimized ? 'none' : 'block'
     }"
     @mousedown="onWindowClick"
   >
     <div ref="handleRef" class="classic-title-bar">
       <div class="classic-title-text">{{ title }}</div>
       <div class="classic-window-controls">
-        <div class="classic-ctrl-btn">_</div>
-        <div class="classic-ctrl-btn">❐</div>
-        <div class="classic-ctrl-btn">✕</div>
+        <div class="classic-ctrl-btn" @mousedown.stop @click="emit('minimize')">_</div>
+        <div class="classic-ctrl-btn" @mousedown.stop>❐</div>
+        <div class="classic-ctrl-btn" @mousedown.stop @click="emit('close')">✕</div>
       </div>
     </div>
     <div class="classic-window-content">

@@ -1,16 +1,64 @@
 <script setup>
-const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+import { ref, onMounted, onUnmounted } from 'vue'
+import StartMenu from './StartMenu.vue'
+
+const props = defineProps(['windows'])
+const emit = defineEmits(['open-app', 'toggle-minimize'])
+
+const isStartOpen = ref(false)
+const currentTime = ref(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
+
+let timer
+onMounted(() => {
+  timer = setInterval(() => {
+    currentTime.value = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }, 1000)
+})
+
+onUnmounted(() => {
+  clearInterval(timer)
+})
+
+const toggleStart = () => {
+  isStartOpen.value = !isStartOpen.value
+}
+
+const closeStart = () => {
+  isStartOpen.value = false
+}
 </script>
 
 <template>
   <div class="classic-taskbar classic-outset">
-    <button class="classic-start-btn btn-classic">
+    <button 
+      class="classic-start-btn btn-classic" 
+      :class="{ 'task-inset': isStartOpen }"
+      @click="toggleStart"
+    >
       <span class="start-icon">🪟</span> <b>Start</b>
     </button>
+    
+    <StartMenu 
+      v-if="isStartOpen" 
+      :windows="windows" 
+      @open-app="(id) => emit('open-app', id)"
+      @close="closeStart"
+    />
+
     <div class="classic-taskbar-items">
-      <div class="classic-task-item task-inset">Desktop</div>
-      <div class="classic-task-item">My Portfolio</div>
+      <template v-for="(win, id) in windows" :key="id">
+        <button 
+          v-if="win.isOpen"
+          class="classic-task-item" 
+          :class="{ 'task-inset': !win.isMinimized }"
+          @click="emit('toggle-minimize', id)"
+        >
+          <span class="task-icon">📁</span>
+          <span class="task-title">{{ win.title }}</span>
+        </button>
+      </template>
     </div>
+
     <div class="classic-system-tray classic-inset">
       <div class="classic-tray-icons">
         <span>🔊</span>
@@ -53,13 +101,17 @@ const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute:
   display: flex;
   gap: 2px;
   margin-left: 5px;
+  overflow-x: auto;
 }
 
 .classic-task-item {
   height: 22px;
-  padding: 0 10px;
+  max-width: 150px;
+  min-width: 60px;
+  padding: 0 5px;
   display: flex;
   align-items: center;
+  gap: 4px;
   font-size: 11px;
   background-color: var(--win-grey);
   border: 1px solid;
@@ -67,6 +119,10 @@ const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute:
   border-left-color: var(--win-white);
   border-right-color: var(--win-grey-dark);
   border-bottom-color: var(--win-grey-dark);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .task-inset {
@@ -78,12 +134,17 @@ const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute:
   font-weight: bold;
 }
 
+.task-icon {
+  font-size: 12px;
+}
+
 .classic-system-tray {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 0 5px;
   height: 22px;
+  flex-shrink: 0;
 }
 
 .classic-tray-icons {

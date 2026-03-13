@@ -2,20 +2,23 @@
 import ClassicWindow from './ClassicWindow.vue'
 import TiptapEditor from './TiptapEditor.vue'
 
-defineProps(['initialX', 'initialY', 'zIndex'])
-defineEmits(['focus'])
+defineProps(['isMinimized', 'initialX', 'initialY', 'zIndex'])
+defineEmits(['focus', 'close', 'minimize'])
 </script>
 
 <template>
   <ClassicWindow 
     title="About - Notepad" 
     id="about"
+    :isMinimized="isMinimized"
     :initialX="initialX"
     :initialY="initialY"
     :zIndex="zIndex"
     initialWidth="600px"
     initialHeight="400px"
     @focus="$emit('focus')"
+    @close="$emit('close')"
+    @minimize="$emit('minimize')"
   >
     <div class="classic-notepad">
       <div class="notepad-menu">
