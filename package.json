@@ -1,0 +1,21 @@
+{
+  "name": "porfolio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@blocknote/core": "^0.41.1",
+    "@blocknote/mantine": "^0.47.1",
+    "blocknote-vue": "^0.1.6",
+    "vue": "^3.5.30"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.5",
+    "vite": "^8.0.0"
+  }
+}
