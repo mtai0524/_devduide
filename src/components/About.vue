@@ -1,8 +1,8 @@
 <script setup>
 import ClassicWindow from './ClassicWindow.vue'
-import BlockNoteEditor from './BlockNoteEditor.vue'
+import TiptapEditor from './TiptapEditor.vue'
 
-defineProps(['initialX', 'initialY', 'initialWidth', 'initialHeight', 'zIndex'])
+defineProps(['initialX', 'initialY', 'zIndex'])
 defineEmits(['focus'])
 </script>
 
@@ -12,9 +12,9 @@ defineEmits(['focus'])
     id="about"
     :initialX="initialX"
     :initialY="initialY"
-    :initialWidth="initialWidth"
-    :initialHeight="initialHeight"
     :zIndex="zIndex"
+    initialWidth="600px"
+    initialHeight="400px"
     @focus="$emit('focus')"
   >
     <div class="classic-notepad">
@@ -22,7 +22,7 @@ defineEmits(['focus'])
         <span>File</span> <span>Edit</span> <span>Search</span> <span>Help</span>
       </div>
       <div class="notepad-editor-wrapper">
-        <BlockNoteEditor />
+        <TiptapEditor />
       </div>
     </div>
   </ClassicWindow>
