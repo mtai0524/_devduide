@@ -10,6 +10,7 @@ import ThreeGame from './components/ThreeGame.vue'
 import WebGLGame from './components/WebGLGame.vue'
 import CatGame from './components/CatGame.vue'
 import BrickRacing from './components/BrickRacing.vue'
+import NightRunner from './components/NightRunner.vue'
 import ContextMenu from './components/ContextMenu.vue'
 
 const windows = reactive({
@@ -21,7 +22,8 @@ const windows = reactive({
   threeGame: { title: '3D Space Explorer', isOpen: false, isMinimized: false, zIndex: 106, initialX: 250, initialY: 150, initialWidth: 400, initialHeight: 300 },
   webglGame: { title: 'WebGL Terminal', isOpen: false, isMinimized: false, zIndex: 107, initialX: 150, initialY: 180, initialWidth: 400, initialHeight: 300 },
   catGame: { title: 'Cat Fish Catcher', isOpen: false, isMinimized: false, zIndex: 108, initialX: 300, initialY: 200, initialWidth: 400, initialHeight: 350 },
-  brickRacer: { title: 'Brick Racer', isOpen: false, isMinimized: false, zIndex: 109, initialX: 100, initialY: 120, initialWidth: 320, initialHeight: 450 }
+  brickRacer: { title: 'Brick Racer', isOpen: false, isMinimized: false, zIndex: 109, initialX: 100, initialY: 120, initialWidth: 320, initialHeight: 450 },
+  nightRunner: { title: 'Night Runner', isOpen: false, isMinimized: false, zIndex: 110, initialX: 400, initialY: 150, initialWidth: 400, initialHeight: 350 }
 })
 
 const maxZ = ref(108)
@@ -202,6 +204,15 @@ onMounted(() => {
         </div>
         <div 
           class="classic-icon-item" 
+          :class="{ focused: focusedIcon === 'nightRunner' }"
+          @click="focusedIcon = 'nightRunner'"
+          @dblclick="openWindow('nightRunner')"
+        >
+          <div class="icon-graphic">🌙</div>
+          <div class="icon-label">Night Runner</div>
+        </div>
+        <div 
+          class="classic-icon-item" 
           :class="{ focused: focusedIcon === 'about' }"
           @click="focusedIcon = 'about'"
           @dblclick="openWindow('about')"
@@ -278,6 +289,7 @@ onMounted(() => {
         />
         <ThreeGame 
           v-if="windows.threeGame.isOpen"
+          :isActive="activeWindowId === 'threeGame'"
           :isMinimized="windows.threeGame.isMinimized"
           :initialX="windows.threeGame.initialX" 
           :initialY="windows.threeGame.initialY" 
@@ -290,6 +302,7 @@ onMounted(() => {
         />
         <WebGLGame 
           v-if="windows.webglGame.isOpen"
+          :isActive="activeWindowId === 'webglGame'"
           :isMinimized="windows.webglGame.isMinimized"
           :initialX="windows.webglGame.initialX" 
           :initialY="windows.webglGame.initialY" 
@@ -302,6 +315,7 @@ onMounted(() => {
         />
         <CatGame 
           v-if="windows.catGame.isOpen"
+          :isActive="activeWindowId === 'catGame'"
           :isMinimized="windows.catGame.isMinimized"
           :initialX="windows.catGame.initialX" 
           :initialY="windows.catGame.initialY" 
@@ -314,6 +328,7 @@ onMounted(() => {
         />
         <BrickRacing 
           v-if="windows.brickRacer.isOpen"
+          :isActive="activeWindowId === 'brickRacer'"
           :isMinimized="windows.brickRacer.isMinimized"
           :initialX="windows.brickRacer.initialX" 
           :initialY="windows.brickRacer.initialY" 
@@ -323,6 +338,19 @@ onMounted(() => {
           @focus="handleFocus('brickRacer')"
           @close="closeWindow('brickRacer')"
           @minimize="minimizeWindow('brickRacer')"
+        />
+        <NightRunner 
+          v-if="windows.nightRunner.isOpen"
+          :isActive="activeWindowId === 'nightRunner'"
+          :isMinimized="windows.nightRunner.isMinimized"
+          :initialX="windows.nightRunner.initialX" 
+          :initialY="windows.nightRunner.initialY" 
+          :initialWidth="windows.nightRunner.initialWidth"
+          :initialHeight="windows.nightRunner.initialHeight"
+          :zIndex="windows.nightRunner.zIndex"
+          @focus="handleFocus('nightRunner')"
+          @close="closeWindow('nightRunner')"
+          @minimize="minimizeWindow('nightRunner')"
         />
       </div>
     </main>

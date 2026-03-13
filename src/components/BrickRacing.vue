@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted, reactive } from 'vue'
 import ClassicWindow from './ClassicWindow.vue'
 
 const props = defineProps({
+  isActive: Boolean,
   isMinimized: Boolean,
   initialX: Number,
   initialY: Number,
@@ -73,6 +74,8 @@ const update = () => {
 }
 
 const handleKey = (e) => {
+  if (!props.isActive || props.isMinimized) return
+  
   if (e.key === 'ArrowLeft' || e.key === 'a') {
     if (playerLane.value > 0) playerLane.value--
   } else if (e.key === 'ArrowRight' || e.key === 'd') {

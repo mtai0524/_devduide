@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted, reactive } from 'vue'
 import ClassicWindow from './ClassicWindow.vue'
 
 const props = defineProps({
+  isActive: Boolean,
   isMinimized: Boolean,
   initialX: Number,
   initialY: Number,
@@ -171,7 +172,7 @@ const render = (time) => {
 }
 
 const handleMouseMove = (e) => {
-  if (!containerRef.value) return
+  if (!props.isActive || props.isMinimized || !containerRef.value) return
   const rect = containerRef.value.getBoundingClientRect()
   const mouseX = e.clientX - rect.left
   catX = (mouseX / rect.width) * 2 - 1
