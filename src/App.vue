@@ -11,6 +11,8 @@ import WebGLGame from './components/WebGLGame.vue'
 import CatGame from './components/CatGame.vue'
 import BrickRacing from './components/BrickRacing.vue'
 import NightRunner from './components/NightRunner.vue'
+import CodeEditor from './components/CodeEditor.vue'
+import DisplaySettings from './components/DisplaySettings.vue'
 import ContextMenu from './components/ContextMenu.vue'
 
 const windows = reactive({
@@ -23,8 +25,12 @@ const windows = reactive({
   webglGame: { title: 'WebGL Terminal', isOpen: false, isMinimized: false, zIndex: 107, initialX: 150, initialY: 180, initialWidth: 400, initialHeight: 300 },
   catGame: { title: 'Cat Fish Catcher', isOpen: false, isMinimized: false, zIndex: 108, initialX: 300, initialY: 200, initialWidth: 400, initialHeight: 350 },
   brickRacer: { title: 'Brick Racer', isOpen: false, isMinimized: false, zIndex: 109, initialX: 100, initialY: 120, initialWidth: 320, initialHeight: 450 },
-  nightRunner: { title: 'Night Runner', isOpen: false, isMinimized: false, zIndex: 110, initialX: 400, initialY: 150, initialWidth: 400, initialHeight: 350 }
+  nightRunner: { title: 'Night Runner', isOpen: false, isMinimized: false, zIndex: 110, initialX: 400, initialY: 150, initialWidth: 400, initialHeight: 350 },
+  codeEditor: { title: 'Code Editor', isOpen: true, isMinimized: false, zIndex: 111, initialX: 50, initialY: 50, initialWidth: 600, initialHeight: 400 },
+  displaySettings: { title: 'Display Properties', isOpen: false, isMinimized: false, zIndex: 112, initialX: 200, initialY: 100, initialWidth: 400, initialHeight: 450 }
 })
+
+const wallpaper = ref(localStorage.getItem('desktopWallpaper') || '')
 
 const maxZ = ref(108)
 const activeWindowId = ref(null)
@@ -41,13 +47,14 @@ const focusedIcon = ref(null)
 const desktopMenuItems = [
   { label: 'Welcome', icon: '📄', action: () => openWindow('hero') },
   { label: 'My Computer', icon: '💽', action: () => openWindow('projects') },
+  { label: 'Visual Source', icon: '📝', action: () => openWindow('codeEditor') },
   { separator: true },
   { label: 'Games', icon: '🎮', action: () => {} }, // Placeholder
   { separator: true },
   { label: 'Refresh', action: () => window.location.reload() },
   { label: 'New Task', disabled: true },
   { separator: true },
-  { label: 'Properties', action: () => alert('Windows Portfolio v1.0. Created with <3') }
+  { label: 'Properties', action: () => openWindow('displaySettings') }
 ]
 
 const handleFocus = (id) => {
@@ -100,7 +107,7 @@ const handleContextMenu = (e) => {
   contextMenu.show = true
 }
 
-const iconIds = ['projects', 'hero', 'minesweeper', 'threeGame', 'about']
+const iconIds = ['projects', 'hero', 'minesweeper', 'threeGame', 'about', 'codeEditor']
 
 const handleGlobalKeyDown = (e) => {
   // Alt + F4: Close active window
@@ -130,13 +137,24 @@ const handleGlobalKeyDown = (e) => {
   }
 }
 
+const handleWallpaperChange = (newWallpaper) => {
+  wallpaper.value = newWallpaper
+}
+
 onMounted(() => {
   window.addEventListener('keydown', handleGlobalKeyDown)
+  // Ensure wallpaper is loaded if not already from ref initializer
+  const saved = localStorage.getItem('desktopWallpaper')
+  if (saved) wallpaper.value = saved
 })
 </script>
 
 <template>
-  <div class="classic-desktop" @contextmenu="handleContextMenu">
+  <div 
+    class="classic-desktop" 
+    @contextmenu="handleContextMenu"
+    :style="{ backgroundImage: wallpaper ? `url(${wallpaper})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }"
+  >
     <main class="desktop">
       <div class="desktop-icons">
         <div 
@@ -210,6 +228,15 @@ onMounted(() => {
         >
           <div class="icon-graphic">🌙</div>
           <div class="icon-label">Night Runner</div>
+        </div>
+        <div 
+          class="classic-icon-item" 
+          :class="{ focused: focusedIcon === 'codeEditor' }"
+          @click="focusedIcon = 'codeEditor'"
+          @dblclick="openWindow('codeEditor')"
+        >
+          <div class="icon-graphic">📑</div>
+          <div class="icon-label">Visual Source</div>
         </div>
         <div 
           class="classic-icon-item" 
@@ -351,6 +378,33 @@ onMounted(() => {
           @focus="handleFocus('nightRunner')"
           @close="closeWindow('nightRunner')"
           @minimize="minimizeWindow('nightRunner')"
+        />
+        <CodeEditor 
+          v-if="windows.codeEditor.isOpen"
+          :isActive="activeWindowId === 'codeEditor'"
+          :isMinimized="windows.codeEditor.isMinimized"
+          :initialX="windows.codeEditor.initialX" 
+          :initialY="windows.codeEditor.initialY" 
+          :initialWidth="windows.codeEditor.initialWidth"
+          :initialHeight="windows.codeEditor.initialHeight"
+          :zIndex="windows.codeEditor.zIndex"
+          @focus="handleFocus('codeEditor')"
+          @close="closeWindow('codeEditor')"
+          @minimize="minimizeWindow('codeEditor')"
+        />
+        <DisplaySettings 
+          v-if="windows.displaySettings.isOpen"
+          :isActive="activeWindowId === 'displaySettings'"
+          :isMinimized="windows.displaySettings.isMinimized"
+          :initialX="windows.displaySettings.initialX" 
+          :initialY="windows.displaySettings.initialY" 
+          :initialWidth="windows.displaySettings.initialWidth"
+          :initialHeight="windows.displaySettings.initialHeight"
+          :zIndex="windows.displaySettings.zIndex"
+          @focus="handleFocus('displaySettings')"
+          @close="closeWindow('displaySettings')"
+          @minimize="minimizeWindow('displaySettings')"
+          @wallpaper-change="handleWallpaperChange"
         />
       </div>
     </main>
